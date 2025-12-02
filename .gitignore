@@ -1,0 +1,38 @@
+# Unity generated
+Library/
+Temp/
+Obj/
+Log/
+Build/
+Builds/
+
+# Never commit these
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# VS Code
+.vscode/
+
+# Visual Studio
+.vs/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
