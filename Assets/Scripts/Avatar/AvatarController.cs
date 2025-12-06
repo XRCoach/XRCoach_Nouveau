@@ -2,8 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 
 /// <summary>
-/// Contrôle l'avatar 3D qui représente l'utilisateur en temps réel
-/// Gère le rigging, l'animation procédurale et le feedback miroir
+/// Contrï¿½le l'avatar 3D qui reprï¿½sente l'utilisateur en temps rï¿½el
+/// Gï¿½re le rigging, l'animation procï¿½durale et le feedback miroir
 /// </summary>
 [RequireComponent(typeof(Animator))]
 public class AvatarController : MonoBehaviour
@@ -49,6 +49,12 @@ public class AvatarController : MonoBehaviour
     /// </summary>
     private void InitializeBoneMapping()
     {
+        if (animator.avatar == null)
+        {
+            Debug.LogError("AvatarController: Animator has no Avatar assigned. Please ensure the avatar prefab has a Humanoid Avatar configured in the Animator component.", gameObject);
+            return;
+        }
+
         boneTransforms = new Dictionary<HumanBodyBones, Transform>();
         targetRotations = new Dictionary<HumanBodyBones, Quaternion>();
 
@@ -64,7 +70,7 @@ public class AvatarController : MonoBehaviour
     }
 
     /// <summary>
-    /// Initialise le système de ghost trail
+    /// Initialise le systï¿½me de ghost trail
     /// </summary>
     private void InitializeGhostTrail()
     {
@@ -72,13 +78,13 @@ public class AvatarController : MonoBehaviour
     }
 
     /// <summary>
-    /// Met à jour la rotation d'un joint spécifique depuis les données IMU
+    /// Met ï¿½ jour la rotation d'un joint spï¿½cifique depuis les donnï¿½es IMU
     /// </summary>
     public void UpdateJointRotation(HumanBodyBones bone, Quaternion rotation)
     {
         if (targetRotations.ContainsKey(bone))
         {
-            // Applique le mode miroir si activé
+            // Applique le mode miroir si activï¿½
             if (enableMirrorMode)
             {
                 rotation = MirrorRotation(rotation);
@@ -93,7 +99,7 @@ public class AvatarController : MonoBehaviour
         // Applique les rotations avec smoothing
         ApplySmoothRotations();
 
-        // Gère le ghost trail
+        // Gï¿½re le ghost trail
         if (enableGhostTrail)
         {
             UpdateGhostTrail();
@@ -120,7 +126,7 @@ public class AvatarController : MonoBehaviour
     }
 
     /// <summary>
-    /// Créé un effet miroir pour la rotation
+    /// Crï¿½ï¿½ un effet miroir pour la rotation
     /// </summary>
     private Quaternion MirrorRotation(Quaternion rotation)
     {
@@ -131,7 +137,7 @@ public class AvatarController : MonoBehaviour
     }
 
     /// <summary>
-    /// Change le matériau de l'avatar selon la qualité de posture
+    /// Change le matï¿½riau de l'avatar selon la qualitï¿½ de posture
     /// </summary>
     public void SetPostureFeedback(PostureQuality quality)
     {
@@ -149,7 +155,7 @@ public class AvatarController : MonoBehaviour
     }
 
     /// <summary>
-    /// Gère la création et destruction des ghosts
+    /// Gï¿½re la crï¿½ation et destruction des ghosts
     /// </summary>
     private void UpdateGhostTrail()
     {
@@ -161,11 +167,11 @@ public class AvatarController : MonoBehaviour
     }
 
     /// <summary>
-    /// Créé un ghost de l'avatar à sa position actuelle
+    /// Crï¿½ï¿½ un ghost de l'avatar ï¿½ sa position actuelle
     /// </summary>
     private void CreateGhost()
     {
-        // Créé un nouveau ghost
+        // Crï¿½ï¿½ un nouveau ghost
         GameObject ghost = new GameObject("Ghost");
         ghost.transform.position = transform.position;
         ghost.transform.rotation = transform.rotation;
@@ -175,7 +181,7 @@ public class AvatarController : MonoBehaviour
         ghostRenderer.sharedMesh = meshRenderer.sharedMesh;
         ghostRenderer.material = ghostMaterial;
 
-        // Bake le mesh à la pose actuelle
+        // Bake le mesh ï¿½ la pose actuelle
         Mesh bakedMesh = new Mesh();
         meshRenderer.BakeMesh(bakedMesh);
 
@@ -188,7 +194,7 @@ public class AvatarController : MonoBehaviour
         // Supprime le SkinnedMeshRenderer car on utilise maintenant un MeshRenderer statique
         Destroy(ghostRenderer);
 
-        // Ajoute à la liste
+        // Ajoute ï¿½ la liste
         ghostTrail.Add(ghost);
 
         // Fade out component
@@ -205,7 +211,7 @@ public class AvatarController : MonoBehaviour
     }
 
     /// <summary>
-    /// Active/désactive le ghost trail
+    /// Active/dï¿½sactive le ghost trail
     /// </summary>
     public void SetGhostTrailEnabled(bool enabled)
     {
@@ -247,7 +253,7 @@ public class JointMapping
 }
 
 /// <summary>
-/// Qualité de la posture pour le feedback visuel
+/// Qualitï¿½ de la posture pour le feedback visuel
 /// </summary>
 public enum PostureQuality
 {
