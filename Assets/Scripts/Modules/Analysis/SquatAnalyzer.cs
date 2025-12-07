@@ -1,61 +1,85 @@
 using UnityEngine;
-using UnityEngine.Events; // Required for events
+using System; // Required for Events
 
 public class SquatAnalyzer : MonoBehaviour
 {
     [Header("Dependencies")]
-    public IMUProvider imuProvider; // Link to your sensor script
+    public IMUProvider imuProvider;
 
     [Header("Settings")]
-    public float SquatThreshold = 75f;   // Angle to consider a "Squat"
-    public float StandingThreshold = 20f; // Angle to consider "Standing"
+    public float SquatThreshold = 75f;
+    public float StandingThreshold = 20f;
+
+    [Header("Coach Settings")]
+    public float MinDescentTime = 1.0f; // Seconds. Any faster is "Too Fast"
 
     [Header("Debug Info")]
     public string CurrentState = "Idle";
     public float CurrentAngle = 0f;
     public int RepCount = 0;
+    public string LastError = ""; // Stores the last coaching feedback
 
-    // States for our machine
+    // Events for Member 3 later
+    public event Action OnRepCount;
+    public event Action<string> OnBadForm;
+
     private enum ExerciseState { Standing, Descending, Squatting, Ascending }
     private ExerciseState _state = ExerciseState.Standing;
+
+    private float _stateStartTime = 0f; // To track duration
 
     private void Update()
     {
         if (imuProvider == null) return;
 
-        // 1. Calculate the Angle
-        // We compare the Phone's "Up" vector vs the World's "Up" vector.
-        // When standing, they are aligned (0 degrees).
-        // When squatting (thighs horizontal), the phone rotates ~90 degrees.
+        // 1. Calculate Angle
         Vector3 phoneUp = imuProvider.Attitude * Vector3.up;
         CurrentAngle = Vector3.Angle(Vector3.up, phoneUp);
 
-        // 2. State Machine Logic
+        // 2. State Machine
         switch (_state)
         {
             case ExerciseState.Standing:
-                // If angle increases past 30, we are going down
                 if (CurrentAngle > 30f) ChangeState(ExerciseState.Descending);
                 break;
 
             case ExerciseState.Descending:
-                // If we pass the threshold (75), we are in a deep squat
-                if (CurrentAngle > SquatThreshold) ChangeState(ExerciseState.Squatting);
-                // If they go back up too early, reset
+                // Check if they reached the bottom
+                if (CurrentAngle > SquatThreshold)
+                {
+                    // --- SPEED CHECK ---
+                    float descentDuration = Time.time - _stateStartTime;
+
+                    if (descentDuration < MinDescentTime)
+                    {
+                        // Too Fast!
+                        LastError = $"TOO FAST! ({descentDuration:F1}s)";
+                        OnBadForm?.Invoke("Too Fast");
+                        Debug.LogWarning(LastError);
+                    }
+                    else
+                    {
+                        // Good Speed
+                        LastError = "";
+                    }
+                    // -------------------
+
+                    ChangeState(ExerciseState.Squatting);
+                }
+                // Reset if they go back up without squatting
                 else if (CurrentAngle < StandingThreshold) ChangeState(ExerciseState.Standing);
                 break;
 
             case ExerciseState.Squatting:
-                // We are at the bottom. Wait for them to go up.
                 if (CurrentAngle < SquatThreshold - 10f) ChangeState(ExerciseState.Ascending);
                 break;
 
             case ExerciseState.Ascending:
-                // If they reach the top, count the rep!
                 if (CurrentAngle < StandingThreshold)
                 {
                     RepCount++;
-                    Debug.Log($"Repetition {RepCount} Completed!");
+                    OnRepCount?.Invoke();
+                    LastError = "Good Rep!"; // Positive feedback
                     ChangeState(ExerciseState.Standing);
                 }
                 break;
@@ -65,20 +89,29 @@ public class SquatAnalyzer : MonoBehaviour
     private void ChangeState(ExerciseState newState)
     {
         _state = newState;
+        _stateStartTime = Time.time; // Reset timer on state change
         CurrentState = _state.ToString();
     }
 
-    // Display Debug Info on Screen
     private void OnGUI()
     {
         GUIStyle style = new GUIStyle();
-        style.fontSize = 30;
-        style.normal.textColor = Color.yellow; // Yellow text for Analysis
+        style.fontSize = 25;
+        style.normal.textColor = Color.yellow;
 
-        GUILayout.BeginArea(new Rect(500, 50, Screen.width, Screen.height));
+        // Position on the RIGHT side
+        GUILayout.BeginArea(new Rect(Screen.width - 400, 50, 400, Screen.height));
+
         GUILayout.Label($"State: {CurrentState}", style);
         GUILayout.Label($"Angle: {CurrentAngle:F1}°", style);
         GUILayout.Label($"REPS: {RepCount}", style);
+
+        // Show Errors in RED
+        style.normal.textColor = Color.red;
+        style.fontSize = 30;
+        GUILayout.Space(20); // Add gap
+        GUILayout.Label(LastError, style);
+
         GUILayout.EndArea();
     }
 }
