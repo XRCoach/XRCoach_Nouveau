@@ -5761,7 +5761,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93a62daf7ddeceb4395de96075372637, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  avatarController: {fileID: 0}
+  avatarController: {fileID: 1305764035}
   visualFeedback: {fileID: 1168131667}
   audioFeedback: {fileID: 1987757099}
   particleEffects: {fileID: 2043780044}
@@ -5902,7 +5902,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1305764033}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: fe26836abba049c48b6b47a460ee51a1, type: 3}
   m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
