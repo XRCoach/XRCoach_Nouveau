@@ -5764,7 +5764,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93a62daf7ddeceb4395de96075372637, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  avatarController: {fileID: 0}
+  avatarController: {fileID: 1305764035}
   visualFeedback: {fileID: 1168131667}
   audioFeedback: {fileID: 1987757099}
   particleEffects: {fileID: 2043780044}
