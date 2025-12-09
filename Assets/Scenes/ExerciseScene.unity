@@ -701,6 +701,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d202ed6d680c4e947a0c0d6fb98feaa2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  imuProvider: {fileID: 0}
+  useIMU: 1
+  trackRotation: 1
+  trackPosition: 0
+  positionScale: 0.1
+  rotationSmoothing: 5
+  positionSmoothing: 3
 --- !u!114 &415099792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -758,6 +765,103 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: -1
+--- !u!1 &508800979
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 508800983}
+  - component: {fileID: 508800982}
+  - component: {fileID: 508800981}
+  - component: {fileID: 508800980}
+  m_Layer: 0
+  m_Name: BodyTrackingManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &508800980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 508800979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a59cace3c8390542ad5883919579f1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IMUAvatarExample
+  integrator: {fileID: 0}
+  imuProvider: {fileID: 0}
+  avatarController: {fileID: 0}
+--- !u!114 &508800981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 508800979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cb6086a368b60a429a73487be73f0a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IMUBodyIntegrator
+  imuProvider: {fileID: 0}
+  avatarController: {fileID: 0}
+  bodyTracker: {fileID: 0}
+  bodyPartMappings: []
+  enableTracking: 1
+  globalSmoothingFactor: 0.15
+  calibrationKey: 99
+  resetKey: 114
+  showDebugInfo: 1
+--- !u!114 &508800982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 508800979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ba978758919e6e46a2e08e6ab5fc544, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IMUAvatarController
+  imuProvider: {fileID: 0}
+  avatarController: {fileID: 0}
+  bodyRoot: {fileID: 0}
+  trackFullBody: 0
+  primaryBone: 0
+  enablePosition: 1
+  positionSensitivity: 1
+  heightOffset: 0
+  enableRotation: 1
+  rotationOffset: {x: 0, y: 0, z: 0}
+  invertX: 0
+  invertY: 0
+  invertZ: 0
+  enableSmoothing: 1
+  smoothingSpeed: 10
+--- !u!4 &508800983
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 508800979}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.16916, y: 0.11841, z: 0.16916}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &587514519
 GameObject:
   m_ObjectHideFlags: 0
@@ -7068,3 +7172,4 @@ SceneRoots:
   - {fileID: 372864095}
   - {fileID: 46909423}
   - {fileID: 1141101883}
+  - {fileID: 508800983}
