@@ -1,10 +1,17 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class IMUProvider : MonoBehaviour
 {
+    // Public Data
     public Vector3 Acceleration { get; private set; }
     public Vector3 Gyroscope { get; private set; }
+
+    // This is now the "Corrected" attitude (Zeroed)
     public Quaternion Attitude { get; private set; }
+
+    // Internal Raw Data
+    private Quaternion _rawAttitude;
+    private Quaternion _calibrationOffset = Quaternion.identity; // The "Bias"
 
     private void Awake()
     {
@@ -17,38 +24,50 @@ public class IMUProvider : MonoBehaviour
 
     private void Update()
     {
-        // 1. Android/iOS Mode (Real Sensors)
+        // 1. Get Raw Data (Android/iOS or Simulation)
         if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
         {
             Acceleration = Input.gyro.userAcceleration;
             Gyroscope = Input.gyro.rotationRateUnbiased;
-            Attitude = Input.gyro.attitude;
+            _rawAttitude = Input.gyro.attitude;
         }
-        // 2. Windows/Editor Mode (Simulation)
         else
         {
             SimulateMotion();
         }
+
+        // 2. Apply Calibration (The Math Magic)
+        // We multiply the Inverse of the Offset by the Raw Rotation to get "Zeroed" rotation.
+        Attitude = Quaternion.Inverse(_calibrationOffset) * _rawAttitude;
+
+        // 3. Input for Calibration (Press 'C' to reset zero)
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            Calibrate();
+        }
+    }
+
+    // Call this when the user is standing still at the start
+    public void Calibrate()
+    {
+        _calibrationOffset = _rawAttitude;
+        Debug.Log("✅ Sensors Calibrated! New Zero set.");
     }
 
     private void SimulateMotion()
     {
-        // Default: Phone standing upright
-        Quaternion targetRot = Quaternion.identity;
+        // Simulation now includes a "Base Tilt" to prove calibration works
+        // Let's pretend the phone is in a crooked pocket (15 degrees off)
+        Quaternion pocketTilt = Quaternion.Euler(15, 0, 0);
+        Quaternion movement = Quaternion.identity;
 
-        // If SPACE is pressed, rotate 90 degrees (Simulate a deep squat or phone tilt)
         if (Input.GetKey(KeyCode.Space))
         {
-            targetRot = Quaternion.Euler(90, 0, 0);
-            Acceleration = new Vector3(0, -1, 0); // Fake gravity
-        }
-        else
-        {
-            Acceleration = Vector3.zero;
+            movement = Quaternion.Euler(90, 0, 0);
         }
 
-        // Smoothly rotate towards target
-        Attitude = Quaternion.Slerp(Attitude, targetRot, Time.deltaTime * 5f);
+        Quaternion targetRot = pocketTilt * movement;
+        _rawAttitude = Quaternion.Slerp(_rawAttitude, targetRot, Time.deltaTime * 5f);
     }
 
     private void OnGUI()
@@ -57,10 +76,12 @@ public class IMUProvider : MonoBehaviour
         style.fontSize = 25;
         style.normal.textColor = Color.red;
 
-        GUILayout.BeginArea(new Rect(50, 50, Screen.width, Screen.height));
-        GUILayout.Label("--- IMU (SIMULATION) ---", style);
-        GUILayout.Label($"Press SPACE to Squat", style);
-        GUILayout.Label($"Attitude: {Attitude.eulerAngles:F1}", style);
+        // Lower right corner
+        GUILayout.BeginArea(new Rect(500, 250, Screen.width, Screen.height));
+        GUILayout.Label("--- IMU PROVIDER ---", style);
+        GUILayout.Label($"[C] to Calibrate", style);
+        GUILayout.Label($"Raw: {_rawAttitude.eulerAngles:F1}", style);
+        GUILayout.Label($"Corrected: {Attitude.eulerAngles:F1}", style);
         GUILayout.EndArea();
     }
 }
