@@ -1,0 +1,19 @@
+{
+    "name": "SportCoachQA.Tests.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:be3abbdd942dd3441803db3ba2e5372d",
+        "GUID:a82e76f76a1c18e458cf83e97f9bcadb"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

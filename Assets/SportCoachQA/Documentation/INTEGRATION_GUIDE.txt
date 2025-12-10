@@ -1,0 +1,148 @@
+﻿ 
+ =================================================================
+SPORT COACH IMU - QA TOOLKIT MODULE
+GUIDE D'INTÉGRATION POUR LE LEAD INTÉGRATEUR (MEMBRE 1)
+Version 1.0.0 | Date: [Date actuelle]
+=================================================================
+
+INFORMATIONS GÉNÉRALES
+----------------------
+Module développé par: Membre 5 (QA, Tests & Validation)
+Package: SportCoachIMU_QAToolkit_v1.0.0.unitypackage
+Compatibilité: Unity 2022.3 LTS+ (Build-in Renderer / URP)
+Dependencies: Aucune dépendance externe
+
+CONTENU DU MODULE
+-----------------
+✓ Performance Monitor (Runtime + Editor Window)
+✓ QA Validator Framework (Tests automatisés)
+✓ 4 Assembly Definitions (.asmdef) - Code isolé
+✓ Documentation complète
+
+PROCÉDURE D'IMPORT
+------------------
+1. SAUVEGARDE du projet principal (backup obligatoire)
+
+2. IMPORT du package:
+   - Assets > Import Package > Custom Package
+   - Sélectionner: SportCoachIMU_QAToolkit_v1.0.0.unitypackage
+   - Vérifier que tous les éléments sont cochés
+   - Cliquer sur "Import"
+
+3. VÉRIFICATION post-import:
+   - Console: Aucune erreur rouge
+   - Menu: "SportCoachQA" visible dans la barre de menu
+   - Project: Dossier Assets/SportCoachQA/ présent
+
+4. TEST RAPIDE:
+   - Play mode
+   - SportCoachQA > Performance Monitor
+   - Cliquer "Start Monitoring"
+   - Vérifier affichage des FPS
+
+ARCHITECTURE DU CODE
+--------------------
+Assets/SportCoachQA/
+├── Runtime/
+│   ├── Performance/PerformanceMonitor.cs
+│   ├── Validation/QAValidator.cs
+│   └── SportCoachQA.Runtime.asmdef
+├── Editor/
+│   ├── Windows/PerformanceMonitorWindow.cs
+│   ├── Windows/QAValidatorWindow.cs
+│   └── SportCoachQA.Editor.asmdef
+└── Tests/
+    ├── Runtime/SportCoachQA.Tests.Runtime.asmdef
+    └── Editor/SportCoachQA.Tests.Editor.asmdef
+
+NAMESPACES
+----------
+- SportCoachQA.Performance
+- SportCoachQA.Validation
+- SportCoachQA.Editor.Windows
+
+POINTS D'ATTENTION POUR L'INTÉGRATION
+--------------------------------------
+1. ASSEMBLIES ISOLÉES
+   - Le code QA est dans ses propres assemblies
+   - Aucun conflit avec le code existant du projet
+   - Si besoin de référencer depuis le projet principal:
+     * Ajouter "SportCoachQA.Runtime" dans vos .asmdef
+
+2. SINGLETON PATTERNS
+   - PerformanceMonitor utilise un singleton persistant
+   - QAValidator créé dynamiquement si absent
+   - Aucune initialisation manuelle requise
+
+3. SCOPES
+   - Editor Code: Uniquement dans l'éditeur Unity
+   - Runtime Code: Utilisable en builds (mais recommandé de désactiver en prod)
+
+4. PERFORMANCE
+   - PerformanceMonitor: Update toutes les 0.5s (configurable)
+   - QAValidator: Exécution à la demande uniquement
+   - Impact négligeable sur les performances
+
+INTÉGRATION AVEC LE CODE EXISTANT
+----------------------------------
+Si vous voulez monitorer la performance depuis votre code:
+```csharp
+using SportCoachQA.Performance;
+
+void YourMethod()
+{
+    float currentFPS = PerformanceMonitor.Instance.CurrentFPS;
+    
+    if (PerformanceMonitor.Instance.IsCriticalPerformance)
+    {
+        Debug.LogWarning("FPS critique détectés!");
+    }
+}
+```
+
+Si vous voulez ajouter des tests custom:
+```csharp
+using SportCoachQA.Validation;
+
+QAValidator validator = FindObjectOfType<QAValidator>();
+validator.Validate("Mon Test", maCondition, "Message custom");
+```
+
+DÉSACTIVATION EN PRODUCTION
+----------------------------
+Pour exclure les outils QA des builds finaux:
+
+Méthode 1 - Scripting Define Symbols:
+- Player Settings > Other Settings
+- Ajouter: QA_TOOLS_ENABLED
+- Entourer le code QA de #if QA_TOOLS_ENABLED
+
+Méthode 2 - Stripping des assemblies:
+- Supprimer les références aux .asmdef QA dans vos builds
+
+TROUBLESHOOTING
+---------------
+Problème: Menu "SportCoachQA" n'apparaît pas
+Solution: Assets > Refresh (Ctrl+R), fermer/rouvrir Unity
+
+Problème: Erreurs de compilation
+Solution: Vérifier que tous les .asmdef sont importés
+
+Problème: "DontDestroyOnLoad" error
+Solution: Code déjà corrigé, uniquement appelé en Play mode
+
+CONTACT & SUPPORT
+-----------------
+Développeur: Membre 5
+Pour questions/modifications: Contacter directement
+
+VALIDATION CHECKLIST
+--------------------
+☐ Import sans erreur
+☐ Menu SportCoachQA visible
+☐ Performance Monitor fonctionnel en Play
+☐ QA Validator exécute les tests
+☐ Aucun conflit avec code existant
+☐ Build Android/iOS réussi (si applicable)
+
+=================================================================

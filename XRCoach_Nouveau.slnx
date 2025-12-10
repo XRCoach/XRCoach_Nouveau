@@ -1,4 +1,6 @@
 ﻿<Solution>
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="SportCoachQA.Editor.csproj" />
+  <Project Path="SportCoachQA.Runtime.csproj" />
 </Solution>

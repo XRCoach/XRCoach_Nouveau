@@ -1,0 +1,16 @@
+{
+    "name": "SportCoachQA.Tests.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:be3abbdd942dd3441803db3ba2e5372d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
